@@ -7,10 +7,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;700;900&amp;family=JetBrains+Mono:wght@300;400&amp;display=swap"
-        rel="stylesheet" />
     <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=JetBrains+Mono:wght@300;400&display=swap"
         rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
@@ -27,7 +25,7 @@
                         "neutral-glass": "rgba(255, 255, 255, 0.03)",
                     },
                     fontFamily: {
-                        "display": ["Inter", "sans-serif"],
+                        "display": ["'Space Grotesk'", "sans-serif"],
                         "mono": ["JetBrains Mono", "monospace"]
                     },
                     borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
@@ -58,9 +56,17 @@
         .wide-track {
             letter-spacing: 0.8em
         }
-
-        .viewport-clear {
-            height: 65vh
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .glass-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
         }
         
         /* --- Animations & Effects --- */
@@ -195,13 +201,13 @@
     </div>
 
 
-    <div id="main-site" class="relative z-20 bg-background-dark">
+    <div id="main-site" class="relative z-20 bg-background-dark shadow-[0_-100px_100px_80px_rgba(7,7,7,1)] rounded-t-[50px]">
         <section id="slide-0"
-            class="w-full min-h-screen relative flex flex-col shrink-0 overflow-hidden bg-background-dark">
+            class="w-full relative flex flex-col shrink-0 overflow-hidden bg-background-dark pt-24 pb-12 rounded-t-[50px]">
 
             <div class="absolute inset-0 noise-bg pointer-events-none"></div>
-            <div class="relative flex h-screen w-full flex-col bg-background-dark group/design-root overflow-hidden">
-                <header class="absolute top-0 left-0 right-0 z-50 glass-header">
+            <div class="relative flex w-full flex-col bg-background-dark group/design-root overflow-hidden">
+                <header class="fixed top-0 left-0 right-0 z-50 glass-header">
                     <div class="max-w-[1440px] mx-auto px-8 lg:px-20 h-20 flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <div class="text-primary">
@@ -231,13 +237,12 @@
                         </div>
                     </div>
                 </header>
-                <main class="flex-1 flex flex-col justify-between pt-20">
-                    <div class="viewport-clear w-full flex items-center justify-center pointer-events-none relative">
-                        <div class="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent">
+                <main class="flex-1 flex flex-col justify-between pt-12">
+                    <section class="w-full max-w-[1440px] mx-auto px-8 lg:px-20 pb-12 flex flex-col items-center relative gap-12">
+                        <div class="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-primary/5 via-transparent to-transparent pointer-events-none"></div>
+                        <div class="w-full flex justify-center py-10">
+                            <!-- spacer -->
                         </div>
-                        <!-- Central viewport reserved for animations -->
-                    </div>
-                    <section class="w-full max-w-[1440px] mx-auto px-8 lg:px-20 pb-12 flex flex-col items-center">
                         <div class="w-full flex flex-col items-center gap-8">
                             <div class="flex flex-col items-center gap-4">
                                 <h2 class="text-slate-100 text-sm font-light wide-track uppercase pl-4 font-mono">LAB
@@ -636,42 +641,42 @@
                         
                         <!-- Interactive Gallery -->
                         <div class="grid grid-cols-2 md:grid-cols-3 w-full items-center justify-between gap-6 relative z-0">
-                            <div class="color-reveal-container flex-1 min-w-[200px] aspect-square rounded-2xl overflow-hidden glass-card relative cursor-none transition-transform hover:scale-105 duration-500 border border-white/10 shadow-2xl">
+                            <div class="color-reveal-container flex-1 min-w-[200px] aspect-square rounded-2xl overflow-hidden glass-card relative cursor-pointer transition-transform hover:scale-105 duration-500 border border-white/10 shadow-2xl" data-title="Генетика" data-text="Генная архитектура и новые методы анализа. Мы исследуем фундаментальные механизмы жизни.">
                                 <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=600&auto=format&fit=crop" class="grayscale-layer absolute inset-0 w-full h-full object-cover grayscale opacity-50 transition-opacity" />
                                 <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=600&auto=format&fit=crop" class="color-layer absolute inset-0 w-full h-full object-cover" style="clip-path: circle(0px at 50% 50%); mix-blend-mode: normal;" />
                                 <div class="absolute bottom-4 left-4 z-10">
                                     <p class="text-[10px] text-primary font-mono uppercase tracking-widest bg-black/50 px-2 py-1 rounded">Генетика</p>
                                 </div>
                             </div>
-                            <div class="color-reveal-container flex-1 min-w-[200px] aspect-square rounded-2xl overflow-hidden glass-card relative cursor-none transition-transform hover:scale-105 duration-500 border border-white/10 shadow-2xl">
+                            <div class="color-reveal-container flex-1 min-w-[200px] aspect-square rounded-2xl overflow-hidden glass-card relative cursor-pointer transition-transform hover:scale-105 duration-500 border border-white/10 shadow-2xl" data-title="Оборудование" data-text="Наше техническое оснащение позволяет обрабатывать огромные массивы данных в реальном времени.">
                                 <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=600&auto=format&fit=crop" class="grayscale-layer absolute inset-0 w-full h-full object-cover grayscale opacity-50 transition-opacity" />
                                 <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=600&auto=format&fit=crop" class="color-layer absolute inset-0 w-full h-full object-cover" style="clip-path: circle(0px at 50% 50%); mix-blend-mode: normal;" />
                                 <div class="absolute bottom-4 left-4 z-10">
                                     <p class="text-[10px] text-primary font-mono uppercase tracking-widest bg-black/50 px-2 py-1 rounded">Оборудование</p>
                                 </div>
                             </div>
-                            <div class="color-reveal-container flex-1 min-w-[200px] aspect-square rounded-2xl overflow-hidden glass-card relative cursor-none transition-transform hover:scale-105 duration-500 border border-white/10 shadow-2xl">
+                            <div class="color-reveal-container flex-1 min-w-[200px] aspect-square rounded-2xl overflow-hidden glass-card relative cursor-pointer transition-transform hover:scale-105 duration-500 border border-white/10 shadow-2xl" data-title="Исследователи" data-text="Высококвалифицированная команда специалистов с международным опытом.">
                                 <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=600&auto=format&fit=crop" class="grayscale-layer absolute inset-0 w-full h-full object-cover grayscale opacity-50 transition-opacity" />
                                 <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=600&auto=format&fit=crop" class="color-layer absolute inset-0 w-full h-full object-cover" style="clip-path: circle(0px at 50% 50%); mix-blend-mode: normal;" />
                                 <div class="absolute bottom-4 left-4 z-10">
                                     <p class="text-[10px] text-primary font-mono uppercase tracking-widest bg-black/50 px-2 py-1 rounded">Исследователи</p>
                                 </div>
                             </div>
-                            <div class="color-reveal-container flex-1 min-w-[200px] aspect-square rounded-2xl overflow-hidden glass-card relative cursor-none transition-transform hover:scale-105 duration-500 border border-white/10 shadow-2xl">
+                            <div class="color-reveal-container flex-1 min-w-[200px] aspect-square rounded-2xl overflow-hidden glass-card relative cursor-pointer transition-transform hover:scale-105 duration-500 border border-white/10 shadow-2xl" data-title="Микробиология" data-text="Детальный разбор клеточных популяций на микроуровне. Мы видим то, что скрыто от обычных глаз.">
                                 <img src="https://images.unsplash.com/photo-1563213126-a4273aed2016?q=80&w=600&auto=format&fit=crop" class="grayscale-layer absolute inset-0 w-full h-full object-cover grayscale opacity-50 transition-opacity" />
                                 <img src="https://images.unsplash.com/photo-1563213126-a4273aed2016?q=80&w=600&auto=format&fit=crop" class="color-layer absolute inset-0 w-full h-full object-cover" style="clip-path: circle(0px at 50% 50%); mix-blend-mode: normal;" />
                                 <div class="absolute bottom-4 left-4 z-10">
                                     <p class="text-[10px] text-primary font-mono uppercase tracking-widest bg-black/50 px-2 py-1 rounded">Микробиология</p>
                                 </div>
                             </div>
-                            <div class="color-reveal-container flex-1 min-w-[200px] aspect-square rounded-2xl overflow-hidden glass-card relative cursor-none transition-transform hover:scale-105 duration-500 border border-white/10 shadow-2xl">
+                            <div class="color-reveal-container flex-1 min-w-[200px] aspect-square rounded-2xl overflow-hidden glass-card relative cursor-pointer transition-transform hover:scale-105 duration-500 border border-white/10 shadow-2xl" data-title="Молекулы" data-text="Синтез и изучение сложных биологических полимеров и химических реакций внутри клеток.">
                                 <img src="https://images.unsplash.com/photo-1530026405186-ed1f139313f8?q=80&w=600&auto=format&fit=crop" class="grayscale-layer absolute inset-0 w-full h-full object-cover grayscale opacity-50 transition-opacity" />
                                 <img src="https://images.unsplash.com/photo-1530026405186-ed1f139313f8?q=80&w=600&auto=format&fit=crop" class="color-layer absolute inset-0 w-full h-full object-cover" style="clip-path: circle(0px at 50% 50%); mix-blend-mode: normal;" />
                                 <div class="absolute bottom-4 left-4 z-10">
                                     <p class="text-[10px] text-primary font-mono uppercase tracking-widest bg-black/50 px-2 py-1 rounded">Молекулы</p>
                                 </div>
                             </div>
-                            <div class="color-reveal-container flex-1 min-w-[200px] aspect-square rounded-2xl overflow-hidden glass-card relative cursor-none transition-transform hover:scale-105 duration-500 border border-white/10 shadow-2xl">
+                            <div class="color-reveal-container flex-1 min-w-[200px] aspect-square rounded-2xl overflow-hidden glass-card relative cursor-pointer transition-transform hover:scale-105 duration-500 border border-white/10 shadow-2xl" data-title="Анализ Данных" data-text="Непрерывный поток вычислений и формирование готовых протоколов лечения на основе Big Data.">
                                 <img src="https://images.unsplash.com/photo-1581093588401-fbb62a04f120?q=80&w=600&auto=format&fit=crop" class="grayscale-layer absolute inset-0 w-full h-full object-cover grayscale opacity-50 transition-opacity" />
                                 <img src="https://images.unsplash.com/photo-1581093588401-fbb62a04f120?q=80&w=600&auto=format&fit=crop" class="color-layer absolute inset-0 w-full h-full object-cover" style="clip-path: circle(0px at 50% 50%); mix-blend-mode: normal;" />
                                 <div class="absolute bottom-4 left-4 z-10">
@@ -1419,7 +1424,40 @@
         }, sectionObserverOptions);
         
         sections.forEach(sec => sectionObserver.observe(sec));
-        // 9. Interactive Bacteria info modals
+        
+        // 9. Interactive Modals and Sound
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let activeHoverSounds = 0;
+        let trrSoundNode = null;
+        function playHoverCrackSound() {
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            activeHoverSounds++;
+            if (!trrSoundNode) {
+                const osc = audioCtx.createOscillator();
+                osc.type = 'sawtooth';
+                osc.frequency.value = 45; 
+                const gain = audioCtx.createGain();
+                gain.gain.value = 0.0;
+                gain.gain.setTargetAtTime(0.08, audioCtx.currentTime, 0.05);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                trrSoundNode = { osc, gain };
+            }
+        }
+        function stopHoverCrackSound() {
+            activeHoverSounds = Math.max(0, activeHoverSounds - 1);
+            if (activeHoverSounds === 0 && trrSoundNode) {
+                trrSoundNode.gain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
+                const nodeToStop = trrSoundNode;
+                trrSoundNode = null;
+                setTimeout(() => {
+                    nodeToStop.osc.stop();
+                    nodeToStop.osc.disconnect();
+                }, 200);
+            }
+        }
+
         function createBacteriumInside(el) {
             const c = colors[Math.floor(Math.random() * colors.length)];
             const svgNS = "http://www.w3.org/2000/svg";
@@ -1476,10 +1514,12 @@
             el.addEventListener('mouseenter', () => {
                 targetSpeed = targetSpeed > 0 ? 8 : -8;
                 c.core = '#ffffff'; // enhance brightness
+                playHoverCrackSound();
             });
             el.addEventListener('mouseleave', () => {
                 targetSpeed = (Math.random() - 0.5) * 2;
                 c.core = colors[Math.floor(Math.random() * colors.length)].core; 
+                stopHoverCrackSound();
             });
         }
 
@@ -1489,13 +1529,17 @@
         const modalTitle = document.getElementById('modal-title');
         const modalText = document.getElementById('modal-text');
         
-        // Init bacteria in slides
-        document.querySelectorAll('.bacterium-model').forEach(model => {
-            createBacteriumInside(model);
-            
+        // Init bacteria in slides and modals
+        document.querySelectorAll('.bacterium-model').forEach(model => createBacteriumInside(model));
+        
+        document.querySelectorAll('.bacterium-model, .color-reveal-container').forEach(model => {
             model.addEventListener('click', () => {
-                modalTitle.innerText = model.getAttribute('data-title');
-                modalText.innerText = model.getAttribute('data-text');
+                const title = model.getAttribute('data-title');
+                const text = model.getAttribute('data-text');
+                if(!title || !text) return;
+
+                modalTitle.innerText = title;
+                modalText.innerText = text;
                 
                 infoModal.classList.remove('opacity-0', 'pointer-events-none');
                 infoModalContent.classList.remove('scale-95');
@@ -1526,7 +1570,7 @@
                     const rect = container.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-                    colorLayer.style.clipPath = `circle(120px at ${x}px ${y}px)`;
+                    colorLayer.style.clipPath = `circle(40px at ${x}px ${y}px)`;
                     if(grayscaleLayer) grayscaleLayer.style.opacity = '1';
                     cursorGlow.classList.add('hover-active');
                 });
