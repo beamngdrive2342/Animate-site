@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html class="dark" lang="ru" style="scroll-behavior: smooth;">
+<head>
+
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;700;900&amp;family=JetBrains+Mono:wght@300;400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#13b6ec",
+              "background-light": "#f6f8f8",
+              "background-dark": "#070707",
+              "neutral-glass": "rgba(255, 255, 255, 0.03)",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"],
+              "mono": ["JetBrains Mono", "monospace"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>.glass-header {
+    background: rgba(7, 7, 7, 0.4);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08)
+    }
+.noise-bg {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCc9HfA7SkdmzaUDHxZIaLn4IoTx-TmTCIlpNc_azUPaV9j0tcmRFKr1-uswH2iyoY8As20dKmiuILqsm6DWafP83PwxLfoXIXwTWSQUmFWZd5LRJ_mlBKNtQSkVKX8mqvyB7Q8jHkacwhaz37LPh3l-94L2mpmd7tDikPFDzqgQkah8vPM-mKC681en6zJAX6_7cKNdpVbGGQ0Ltzu52JgoTQ6W9LCZ8W4r7zFzEAap6qqWZK8fiuOQyQvy1O6MfMLJQ0oB7H7JMg);
+    opacity: 0.03
+    }
+.wide-track {
+    letter-spacing: 0.8em
+    }
+.viewport-clear {
+    height: 65vh
+    }</style>
+
+</head>
+<body class="bg-background-dark font-display text-slate-100 overflow-x-hidden selection:bg-primary/30 m-0">
+    <div class="relative z-20 bg-background-dark h-auto min-h-screen">
+        <section class="w-full min-h-screen relative flex flex-col shrink-0 overflow-hidden bg-background-dark">
+            
+<div class="relative flex h-screen w-full flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-white/5 px-10 py-4 glass-panel z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-6">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-slate-100 text-xl font-bold leading-tight tracking-tight">Lab.Medical</h2>
+</div>
+<nav class="flex items-center gap-9">
+<a class="text-slate-400 hover:text-primary text-sm font-medium transition-colors" href="#">Research</a>
+<a class="text-slate-400 hover:text-primary text-sm font-medium transition-colors" href="#">Equipment</a>
+<a class="text-slate-400 hover:text-primary text-sm font-medium transition-colors" href="#">Team</a>
+<a class="text-primary text-sm font-semibold" href="#">Publications</a>
+<a class="text-slate-400 hover:text-primary text-sm font-medium transition-colors" href="#">Contact</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-primary transition-colors">search</span>
+<input class="bg-white/5 border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none w-64 transition-all" placeholder="Search archive..." type="text"/>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-background-dark px-6 py-2 rounded-lg text-sm font-bold transition-all">
+                    Login
+                </button>
+</div>
+</header>
+<main class="flex-1 relative flex flex-col px-20 pt-16">
+<div class="absolute top-0 right-20 bg-number font-black opacity-10 select-none">
+                04
+            </div>
+<div class="relative z-10 flex flex-col gap-6">
+<div class="flex flex-col gap-2">
+<h1 class="text-5xl font-black tracking-tight text-slate-100">Публикации &amp; Данные</h1>
+<p class="text-slate-400 text-lg max-w-2xl">Архив научных исследований и генетических данных лаборатории нового поколения.</p>
+</div>
+<div class="flex gap-3">
+<button class="glass-pill px-6 py-2 rounded-full text-sm font-medium text-primary border-primary/30">Все</button>
+<button class="glass-pill px-6 py-2 rounded-full text-sm font-medium text-slate-300">2024</button>
+<button class="glass-pill px-6 py-2 rounded-full text-sm font-medium text-slate-300">Генетика</button>
+<button class="glass-pill px-6 py-2 rounded-full text-sm font-medium text-slate-300">Биомаркеры</button>
+</div>
+</div>
+<div class="flex-1 flex items-center justify-center">
+<!-- Центральная пустая область для будущих анимаций -->
+</div>
+<div class="w-full pb-12 z-10">
+<div class="glass-panel rounded-xl overflow-hidden border border-white/10 shadow-2xl">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="text-slate-500 text-xs uppercase tracking-widest border-b border-white/5">
+<th class="px-8 py-4 font-semibold w-24">Год</th>
+<th class="px-8 py-4 font-semibold">Название исследования</th>
+<th class="px-8 py-4 font-semibold">Авторы</th>
+<th class="px-8 py-4 w-16"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="row-hover transition-all cursor-pointer group">
+<td class="px-8 py-6 text-slate-400 font-mono">2024</td>
+<td class="px-8 py-6 text-slate-100 font-medium group-hover:text-primary transition-colors">
+                                    Геномное секвенирование нового поколения в диагностике редких заболеваний
+                                </td>
+<td class="px-8 py-6 text-slate-400">Иванов И.И., Смирнов А.В.</td>
+<td class="px-8 py-6 text-right">
+<span class="material-symbols-outlined text-slate-600 group-hover:text-primary transition-all translate-x-0 group-hover:translate-x-1">arrow_forward</span>
+</td>
+</tr>
+<tr class="row-hover transition-all cursor-pointer group">
+<td class="px-8 py-6 text-slate-400 font-mono">2023</td>
+<td class="px-8 py-6 text-slate-100 font-medium group-hover:text-primary transition-colors">
+                                    Сравнительный анализ биомаркеров в ранней онкологии
+                                </td>
+<td class="px-8 py-6 text-slate-400">Petrov P., Wilson K.</td>
+<td class="px-8 py-6 text-right">
+<span class="material-symbols-outlined text-slate-600 group-hover:text-primary transition-all translate-x-0 group-hover:translate-x-1">arrow_forward</span>
+</td>
+</tr>
+<tr class="row-hover transition-all cursor-pointer group">
+<td class="px-8 py-6 text-slate-400 font-mono">2023</td>
+<td class="px-8 py-6 text-slate-100 font-medium group-hover:text-primary transition-colors">
+                                    Эпигенетические модификации и процессы клеточного старения
+                                </td>
+<td class="px-8 py-6 text-slate-400">Сидоров С.С., Чен Л.</td>
+<td class="px-8 py-6 text-right">
+<span class="material-symbols-outlined text-slate-600 group-hover:text-primary transition-all translate-x-0 group-hover:translate-x-1">arrow_forward</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-4 flex justify-between items-center text-xs text-slate-600 uppercase tracking-tighter">
+<div>Variant 4 of 5 • Data Stream Active</div>
+<div class="flex gap-4">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span> DB Connection: Stable</span>
+<span>Archive Size: 1.2 PB</span>
+</div>
+</div>
+</div>
+</main>
+<div class="absolute inset-0 -z-10 pointer-events-none opacity-20">
+<div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px]"></div>
+</div>
+</div>
+
+        </section>
+    </div>
+</body>
+</html>

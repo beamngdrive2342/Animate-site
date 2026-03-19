@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html class="dark" lang="ru" style="scroll-behavior: smooth;">
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;700;900&amp;family=JetBrains+Mono:wght@300;400&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13b6ec",
+                        "background-light": "#f6f8f8",
+                        "background-dark": "#070707",
+                        "neutral-glass": "rgba(255, 255, 255, 0.03)",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .glass-header {
+            background: rgba(7, 7, 7, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08)
+        }
+        
+        * {
+            cursor: none !important;
+        }
+
+        .noise-bg {
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCc9HfA7SkdmzaUDHxZIaLn4IoTx-TmTCIlpNc_azUPaV9j0tcmRFKr1-uswH2iyoY8As20dKmiuILqsm6DWafP83PwxLfoXIXwTWSQUmFWZd5LRJ_mlBKNtQSkVKX8mqvyB7Q8jHkacwhaz37LPh3l-94L2mpmd7tDikPFDzqgQkah8vPM-mKC681en6zJAX6_7cKNdpVbGGQ0Ltzu52JgoTQ6W9LCZ8W4r7zFzEAap6qqWZK8fiuOQyQvy1O6MfMLJQ0oB7H7JMg);
+            opacity: 0.03
+        }
+
+        .wide-track {
+            letter-spacing: 0.8em
+        }
+
+        .viewport-clear {
+            height: 65vh
+        }
+        
+        /* --- Animations & Effects --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .stagger-row {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.5s ease-out;
+        }
+        .stagger-row.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        #cursor-glow {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 99999;
+            backdrop-filter: invert(1) hue-rotate(180deg) grayscale(0.5);
+            -webkit-backdrop-filter: invert(1) hue-rotate(180deg) grayscale(0.5);
+            transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s, border-color 0.3s;
+        }
+        #cursor-glow.hover-active {
+            width: 80px;
+            height: 80px;
+            background: rgba(19, 182, 236, 0.1);
+            border-color: rgba(19, 182, 236, 0.6);
+            backdrop-filter: invert(0);
+            -webkit-backdrop-filter: invert(0);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease, background-color 0.4s ease;
+        }
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent);
+            transform: skewX(-20deg);
+            transition: 0.5s;
+        }
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(19, 182, 236, 0.2);
+        }
+        .glass-card:hover::before {
+            left: 150%;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        .shake { animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both; }
+    </style>
+
+</head>
+
+<body class="bg-background-dark font-display text-slate-100 overflow-x-hidden selection:bg-primary/30 m-0">
+    <div id="cursor-glow"></div>
+
+
+    <div id="dynamic-island-container">
+        <nav class="dynamic-island" id="dynamic-island">
+            <div class="island-visible">
+                <span class="material-symbols-outlined" style="font-size: 20px;">science</span>
+                <span>Laboratory</span>
+            </div>
+            <div class="island-hidden nav-links">
+                <a href="#slide-0">Введение</a>
+                <a href="#slide-1">Направления</a>
+                <a href="#slide-2">Методология</a>
+                <a href="#slide-3">Публикации</a>
+                <a href="#slide-4">Запись</a>
+            </div>
+        </nav>
+    </div>
+
+    <div id="intro-sequence" class="relative z-0" style="height: 400vh;">
+        <div class="sticky top-0 left-0 w-full h-screen overflow-hidden bg-[#070707] flex items-center justify-center">
+
+            <div id="video-wrapper" class="absolute top-0 left-0 w-full h-full">
+                <!-- CANVAS VIDEO -->
+                <canvas id="bg-canvas" class="absolute top-0 left-0 w-full h-full object-cover"></canvas>
+
+                <!-- OVERLAY FOR FADEOUT TO BLACK -->
+                <div id="fade-overlay" class="absolute inset-0 bg-background-dark opacity-0 pointer-events-none z-20">
+                </div>
+
+                <!-- SVG BACTERIA CONTAINER -->
+                <div id="bacteria-container" class="absolute inset-0 pointer-events-none z-10"></div>
+                
+                <!-- SLOGAN -->
+                <div id="intro-slogan" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-30 opacity-0 transition-opacity duration-1000">
+                    <h1 class="text-6xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20 tracking-tighter mix-blend-overlay">EVOLUTION</h1>
+                    <p class="text-primary font-mono tracking-[0.5em] md:tracking-[1em] uppercase text-xs md:text-sm mt-4">of genetic science</p>
+                </div>
+            </div>
+
+            <!-- TEXT HINT -->
+            <div id="scroll-hint"
+                class="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-400 font-mono text-xs uppercase tracking-widest text-center transition-opacity flex flex-col items-center gap-2 z-30">
+                Скролльте вниз
+                <div class="w-[1px] h-8 bg-gray-400 animate-pulse"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="main-site" class="relative z-20 bg-background-dark">
+        <section id="slide-0"
+            class="w-full min-h-screen relative flex flex-col shrink-0 overflow-hidden bg-background-dark">
+
+            <div class="absolute inset-0 noise-bg pointer-events-none"></div>
+            <div class="relative flex h-screen w-full flex-col bg-background-dark group/design-root overflow-hidden">
+                <header class="absolute top-0 left-0 right-0 z-50 glass-header">
+                    <div class="max-w-[1440px] mx-auto px-8 lg:px-20 h-20 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="text-primary">
+                                <span class="material-symbols-outlined text-3xl">science</span>
+                            </div>
+                            <h2 class="text-slate-100 text-xl font-bold leading-tight tracking-tight font-mono">LAB</h2>
+                        </div>
+                        <nav class="hidden md:flex items-center gap-12">
+                            <a class="text-slate-400 hover:text-primary transition-colors text-xs font-medium uppercase tracking-widest font-mono"
+                                href="#">Исследования</a>
+                            <a class="text-slate-400 hover:text-primary transition-colors text-xs font-medium uppercase tracking-widest font-mono"
+                                href="#">Методология</a>
+                            <a class="text-slate-400 hover:text-primary transition-colors text-xs font-medium uppercase tracking-widest font-mono"
+                                href="#">Технологии</a>
+                            <a class="text-slate-400 hover:text-primary transition-colors text-xs font-medium uppercase tracking-widest font-mono"
+                                href="#">О нас</a>
+                        </nav>
+                        <div class="flex items-center gap-6">
+                            <button
+                                class="flex min-w-[140px] cursor-pointer items-center justify-center rounded-full h-10 px-6 bg-primary text-background-dark text-xs font-bold uppercase tracking-wider hover:bg-white transition-all">
+                                <span>Записаться</span>
+                            </button>
+                            <div
+                                class="h-10 w-10 rounded-full border border-white/10 flex items-center justify-center bg-neutral-glass">
+                                <span class="material-symbols-outlined text-slate-400 text-sm">person</span>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                <main class="flex-1 flex flex-col justify-between pt-20">
+                    <div class="viewport-clear w-full flex items-center justify-center pointer-events-none relative">
+                        <div class="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent">
+                        </div>
+                        <!-- Central viewport reserved for animations -->
+                    </div>
+                    <section class="w-full max-w-[1440px] mx-auto px-8 lg:px-20 pb-12 flex flex-col items-center">
+                        <div class="w-full flex flex-col items-center gap-8">
+                            <div class="flex flex-col items-center gap-4">
+                                <h2 class="text-slate-100 text-sm font-light wide-track uppercase pl-4 font-mono">LAB
+                                    RESEARCH</h2>
+                                <div class="relative h-24 w-[1px] bg-gradient-to-b from-primary/50 to-transparent">
+                                    <div
+                                        class="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-primary shadow-[0_0_15px_rgba(19,182,236,0.8)]">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-full max-w-xl flex flex-col gap-3">
+                                <div class="flex justify-between items-end mb-1">
+                                    <span class="text-primary text-[10px] font-mono uppercase tracking-tighter">System
+                                        Active</span>
+                                    <span class="text-slate-500 text-[10px] font-mono">0.01 / 1.0</span>
+                                </div>
+                                <div class="h-[1px] w-full bg-white/10 relative overflow-hidden">
+                                    <div class="absolute inset-y-0 left-0 bg-primary w-full origin-left"></div>
+                                </div>
+                                <div
+                                    class="flex justify-between text-[10px] font-mono text-slate-600 uppercase tracking-widest mt-1">
+                                    <span>Core initialization</span>
+                                    <span>v.1.0.5</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+                <footer class="absolute bottom-8 left-8 flex flex-col gap-2">
+                    <div class="flex items-center gap-4">
+                        <div class="size-2 rounded-full bg-primary/40"></div>
+                        <span class="text-[10px] font-mono text-slate-500 uppercase tracking-widest">Quantum Diagnostics
+                            Phase</span>
+                    </div>
+                </footer>
+                <aside class="absolute right-8 bottom-8 flex flex-col gap-4 text-slate-500">
+                    <a class="hover:text-primary transition-colors" href="#"><span
+                            class="material-symbols-outlined text-lg">share</span></a>
+                    <a class="hover:text-primary transition-colors" href="#"><span
+                            class="material-symbols-outlined text-lg">help_outline</span></a>
+                </aside>
+                <div class="absolute top-0 left-0 w-full h-full pointer-events-none" id="parallax-bg">
+                    <div class="parallax-element absolute top-1/4 -left-20 w-96 h-96 bg-primary/10 rounded-full blur-[120px]"></div>
+                    <div class="parallax-element absolute bottom-1/4 -right-20 w-96 h-96 bg-primary/5 rounded-full blur-[120px]"></div>
+                </div>
+            </div>
+
+        </section>
+        <section id="slide-1"
+            class="w-full min-h-screen relative flex flex-col shrink-0 overflow-hidden bg-background-dark">
+
+            <div class="relative h-screen w-full flex flex-col overflow-hidden">
+                <!-- Navigation -->
+                <header
+                    class="relative z-50 flex items-center justify-between px-12 py-6 border-b border-white/5 bg-background-dark/50 backdrop-blur-md">
+                    <div class="flex items-center gap-12">
+                        <div class="flex items-center gap-3">
+                            <div class="text-primary">
+                                <svg class="size-8" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z"
+                                        fill="currentColor"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-xl font-black tracking-tighter uppercase">Lab <span
+                                    class="text-primary">Core</span></h2>
+                        </div>
+                        <nav class="hidden md:flex items-center gap-10">
+                            <a class="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest text-primary"
+                                href="#">Research</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest opacity-60"
+                                href="#">Technology</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest opacity-60"
+                                href="#">About</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest opacity-60"
+                                href="#">Archive</a>
+                        </nav>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <button
+                            class="flex items-center justify-center p-2 rounded-full hover:bg-white/5 transition-colors">
+                            <span class="material-symbols-outlined text-primary">search</span>
+                        </button>
+                        <button
+                            class="bg-primary text-background-dark text-xs font-black uppercase tracking-widest px-6 py-2 rounded-full hover:brightness-110 transition-all">
+                            Access Portal
+                        </button>
+                    </div>
+                </header>
+                <!-- Main Viewport Section -->
+                <main class="relative flex-1 flex flex-col justify-between px-12 py-16">
+                    <!-- Background Large Number '01' -->
+                    <div
+                        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none">
+                        <span class="text-[50vh] font-black leading-none opacity-[0.03] text-primary">01</span>
+                    </div>
+                    <!-- Top Header Section -->
+                    <div class="relative z-10 space-y-4">
+                        <div class="flex items-center gap-3">
+                            <span class="w-12 h-[1px] bg-primary/40"></span>
+                            <p class="font-mono text-xs tracking-[0.3em] text-primary uppercase">[Research Overview]</p>
+                        </div>
+                        <h2 class="text-6xl font-black tracking-tight leading-tight max-w-2xl">
+                            Направления <br />
+                            <span
+                                class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-200">исследований</span>
+                        </h2>
+                    </div>
+                    <!-- Center Viewport: Animated Element -->
+                    <div class="flex-1 flex items-center justify-center relative w-full">
+                        <div class="absolute w-48 h-48 bacterium-model cursor-pointer hidden md:block" data-title="Геномика и Биоматериалы" data-text="Наша лаборатория проводит анализ цепочек ДНК с помощью нейросетей нового поколения. Мы выявляем генетические предрасположенности с точностью 99.9% и разрабатываем индивидуальные протоколы лечения для каждого пациента."></div>
+                    </div>
+                    <!-- Bottom Glassmorphic Cards -->
+                    <div class="relative z-10 w-full flex justify-center gap-8 mb-8">
+                        <!-- Category Card 1 -->
+                        <div
+                            class="glass-card group w-72 rounded-xl p-8 flex flex-col items-center gap-6 transition-all hover:border-primary/40 hover:bg-white/5">
+                            <div
+                                class="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary border border-primary/20 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-4xl">genetics</span>
+                            </div>
+                            <div class="text-center">
+                                <p class="font-mono text-[10px] text-primary/60 uppercase tracking-widest mb-1">Sector A
+                                </p>
+                                <h3 class="text-lg font-bold tracking-wide uppercase">Genomics</h3>
+                                <p class="text-xs text-slate-400 mt-2">Анализ ДНК и РНК маркеров для точной диагностики.</p>
+                            </div>
+                            <div
+                                class="h-1 w-8 bg-primary/20 rounded-full group-hover:w-16 transition-all duration-500">
+                            </div>
+                        </div>
+                        <!-- Category Card 2 -->
+                        <div
+                            class="glass-card group w-72 rounded-xl p-8 flex flex-col items-center gap-6 transition-all hover:border-primary/40 hover:bg-white/5">
+                            <div
+                                class="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary border border-primary/20 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-4xl">neurology</span>
+                            </div>
+                            <div class="text-center">
+                                <p class="font-mono text-[10px] text-primary/60 uppercase tracking-widest mb-1">Sector B
+                                </p>
+                                <h3 class="text-lg font-bold tracking-wide uppercase">Neural Mapping</h3>
+                                <p class="text-xs text-slate-400 mt-2">Картирование когнитивных функций и ЦНС.</p>
+                            </div>
+                            <div
+                                class="h-1 w-8 bg-primary/20 rounded-full group-hover:w-16 transition-all duration-500">
+                            </div>
+                        </div>
+                        <!-- Category Card 3 -->
+                        <div
+                            class="glass-card group w-72 rounded-xl p-8 flex flex-col items-center gap-6 transition-all hover:border-primary/40 hover:bg-white/5">
+                            <div
+                                class="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary border border-primary/20 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-4xl">biotech</span>
+                            </div>
+                            <div class="text-center">
+                                <p class="font-mono text-[10px] text-primary/60 uppercase tracking-widest mb-1">Sector C
+                                </p>
+                                <h3 class="text-lg font-bold tracking-wide uppercase">Biophysics</h3>
+                                <p class="text-xs text-slate-400 mt-2">Моделирование клеточного старения в реальном времени.</p>
+                            </div>
+                            <div
+                                class="h-1 w-8 bg-primary/20 rounded-full group-hover:w-16 transition-all duration-500">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Stats Section (Added for improvement #2) -->
+                    <div class="relative z-10 flex justify-center gap-16 pb-8">
+                        <div class="flex flex-col items-center reveal">
+                            <span class="text-3xl font-bold font-mono text-primary"><span class="stat-counter" data-target="1247">0</span></span>
+                            <span class="text-[10px] uppercase tracking-widest text-slate-500 mt-1">Исследований</span>
+                        </div>
+                        <div class="flex flex-col items-center reveal" style="transition-delay: 100ms">
+                            <span class="text-3xl font-bold font-mono text-primary"><span class="stat-counter" data-target="98.4">0</span>%</span>
+                            <span class="text-[10px] uppercase tracking-widest text-slate-500 mt-1">Точность</span>
+                        </div>
+                        <div class="flex flex-col items-center reveal" style="transition-delay: 200ms">
+                            <span class="text-3xl font-bold font-mono text-primary"><span class="stat-counter" data-target="12">0</span></span>
+                            <span class="text-[10px] uppercase tracking-widest text-slate-500 mt-1">Лет Опыта</span>
+                        </div>
+                    </div>
+                </main>
+                <!-- Background Elements / Gradients -->
+                <div class="absolute top-0 left-0 w-full h-full pointer-events-none -z-10">
+                    <div
+                        class="absolute top-[-10%] right-[-5%] w-[40%] h-[60%] rounded-full bg-primary/10 blur-[120px]">
+                    </div>
+                    <div
+                        class="absolute bottom-[-10%] left-[-5%] w-[30%] h-[50%] rounded-full bg-cyan-900/20 blur-[100px]">
+                    </div>
+                    <div class="absolute top-0 left-0 w-full h-full opacity-20"
+                        data-alt="Subtle starry texture for futuristic space effect"
+                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDZyMFM6J2k_f2EJiwiABIfHcM6bNCgwf8o3aR0phVSPcqx1gJgu1J1iX3hWyzVzKHJj6sjz87pNJ9zKH3EzwYdDh8S1zjGOYIFb5IJ6JXVkpNuNhkzc638e2eR2vCJo-3R-8WZkKmxyq5LWGRdLrdtONDhrwRN5_4D9tks5d2iL8msP4kWaA2_gNcRmJRWDwO2WT1PNAGCmkx3kO16KljVqwTY9l6cohMMQH8UlekgAB4iOKucNgnHvNBnfd6p-wEcpbXZ00Q7VHw');">
+                    </div>
+                </div>
+                <!-- Footer / Status Bar -->
+                <footer
+                    class="relative z-50 flex items-center justify-between px-12 py-4 border-t border-white/5 bg-background-dark/80 backdrop-blur-sm">
+                    <div class="flex gap-8">
+                        <div class="flex items-center gap-2">
+                            <div class="size-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                            <p class="text-[10px] font-mono uppercase tracking-widest opacity-40">System Online</p>
+                        </div>
+                        <p class="text-[10px] font-mono uppercase tracking-widest opacity-40" id="live-time">UTC: 12:44:09</p>
+                    </div>
+                    <div class="flex gap-8">
+                        <a class="text-[10px] font-mono uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity"
+                            href="#">Privacy Policy</a>
+                        <a class="text-[10px] font-mono uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity"
+                            href="#">Protocol v2.4.0</a>
+                    </div>
+                </footer>
+            </div>
+
+        </section>
+        <section id="slide-2"
+            class="w-full min-h-screen relative flex flex-col shrink-0 overflow-hidden bg-background-dark">
+
+            <div class="relative flex h-screen w-full flex-col overflow-hidden">
+                <!-- Top Navigation -->
+                <header class="z-50 flex items-center justify-between px-10 py-6">
+                    <div class="flex items-center gap-3">
+                        <div class="size-6 text-primary">
+                            <span class="material-symbols-outlined text-3xl">biotech</span>
+                        </div>
+                        <h2 class="text-slate-100 text-lg font-bold tracking-tight uppercase">LabMethodology</h2>
+                    </div>
+                    <nav class="flex items-center gap-10">
+                        <a class="text-slate-400 hover:text-white text-xs font-medium uppercase tracking-widest transition-colors"
+                            href="#">Process</a>
+                        <a class="text-slate-400 hover:text-white text-xs font-medium uppercase tracking-widest transition-colors"
+                            href="#">Tech</a>
+                        <a class="text-slate-400 hover:text-white text-xs font-medium uppercase tracking-widest transition-colors"
+                            href="#">Services</a>
+                        <button
+                            class="bg-primary/10 border border-primary/20 text-primary px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-primary/20 transition-all">
+                            Get Started
+                        </button>
+                    </nav>
+                </header>
+                <!-- Main Content Area -->
+                <main class="flex-1 flex flex-col relative px-10">
+                    <!-- Section Header -->
+                    <div class="mt-4">
+                        <div class="flex items-baseline gap-6">
+                            <span
+                                class="text-slate-800 dark:text-slate-800 text-8xl font-black leading-none select-none">02</span>
+                            <div class="flex-1">
+                                <h1 class="text-slate-100 text-3xl font-light tracking-widest uppercase mb-4">
+                                    Методология</h1>
+                                <div class="w-full h-[1px] bg-slate-100/10"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Central Viewport (Animated) -->
+                    <div class="flex-1 flex items-center justify-center relative">
+                        <div class="w-full max-w-4xl aspect-video rounded-3xl border border-white/5 bg-white/[0.01] flex items-center justify-center relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                            <div class="text-slate-500/20 uppercase tracking-[2em] text-sm z-10">Neural Analysis Core</div>
+                            <div class="absolute w-64 h-64 bacterium-model cursor-pointer z-20" data-title="Нейросетевой Анализатор" data-text="Центральный компонент нашей методологии включает био-сканирование в реальном времени. Квантовые алгоритмы сопоставляют данные пациента с миллионами паттернов для выявления аномалий на ранней стадии. Нажмите, чтобы открыть техническую спецификацию."></div>
+                        </div>
+                    </div>
+                    <!-- Bottom Methodology Process -->
+                    <div class="pb-16 relative">
+                        <!-- Connecting Line -->
+                        <div class="absolute top-[34px] left-0 w-full h-[1px] step-line z-0"></div>
+                        <div class="grid grid-cols-4 gap-8 relative z-10">
+                            <!-- Step 1 -->
+                            <div class="flex flex-col items-center group">
+                                <div
+                                    class="glass-chip size-16 rounded-full flex items-center justify-center mb-6 group-hover:border-primary/50 transition-colors">
+                                    <span
+                                        class="material-symbols-outlined text-slate-100 group-hover:text-primary transition-colors">science</span>
+                                </div>
+                                <div class="glass-panel px-6 py-4 rounded-xl w-full text-center">
+                                    <h3 class="text-slate-100 text-xs font-bold uppercase tracking-widest mb-1">
+                                        Collection</h3>
+                                    <p class="text-slate-500 text-[10px] uppercase tracking-tighter">Сбор биоматериалов нано-капсулами</p>
+                                </div>
+                            </div>
+                            <!-- Step 2 -->
+                            <div class="flex flex-col items-center group">
+                                <div
+                                    class="glass-chip size-16 rounded-full flex items-center justify-center mb-6 group-hover:border-primary/50 transition-colors">
+                                    <span
+                                        class="material-symbols-outlined text-slate-100 group-hover:text-primary transition-colors">query_stats</span>
+                                </div>
+                                <div class="glass-panel px-6 py-4 rounded-xl w-full text-center">
+                                    <h3 class="text-slate-100 text-xs font-bold uppercase tracking-widest mb-1">Analysis
+                                    </h3>
+                                    <p class="text-slate-500 text-[10px] uppercase tracking-tighter">Секвенирование на квантовых процессорах</p>
+                                </div>
+                            </div>
+                            <!-- Step 3 -->
+                            <div class="flex flex-col items-center group">
+                                <div
+                                    class="glass-chip size-16 rounded-full flex items-center justify-center mb-6 group-hover:border-primary/50 transition-colors">
+                                    <span
+                                        class="material-symbols-outlined text-slate-100 group-hover:text-primary transition-colors">hub</span>
+                                </div>
+                                <div class="glass-panel px-6 py-4 rounded-xl w-full text-center">
+                                    <h3 class="text-slate-100 text-xs font-bold uppercase tracking-widest mb-1">
+                                        Interpretation</h3>
+                                    <p class="text-slate-500 text-[10px] uppercase tracking-tighter">ИИ-верификация полученных результатов</p>
+                                </div>
+                            </div>
+                            <!-- Step 4 -->
+                            <div class="flex flex-col items-center group">
+                                <div
+                                    class="glass-chip size-16 rounded-full flex items-center justify-center mb-6 group-hover:border-primary/50 transition-colors">
+                                    <span
+                                        class="material-symbols-outlined text-slate-100 group-hover:text-primary transition-colors">description</span>
+                                </div>
+                                <div class="glass-panel px-6 py-4 rounded-xl w-full text-center">
+                                    <h3 class="text-slate-100 text-xs font-bold uppercase tracking-widest mb-1">Report
+                                    </h3>
+                                    <p class="text-slate-500 text-[10px] uppercase tracking-tighter">Создание 3D-модели вашего генома</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <!-- Decorative background elements -->
+                <div
+                    class="absolute top-0 right-0 w-1/3 h-1/3 bg-primary/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none">
+                </div>
+                <div
+                    class="absolute bottom-0 left-0 w-1/4 h-1/4 bg-primary/5 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none">
+                </div>
+            </div>
+
+        </section>
+        <section id="slide-3"
+            class="w-full min-h-screen relative flex flex-col shrink-0 overflow-hidden bg-background-dark">
+
+            <div class="relative flex h-screen w-full flex-col">
+                <header
+                    class="flex items-center justify-between whitespace-nowrap border-b border-white/5 px-10 py-4 glass-panel z-50">
+                    <div class="flex items-center gap-8">
+                        <div class="flex items-center gap-4 text-primary">
+                            <div class="size-6">
+                                <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                    <path clip-rule="evenodd"
+                                        d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
+                                        fill="currentColor" fill-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-slate-100 text-xl font-bold leading-tight tracking-tight">Lab.Medical</h2>
+                        </div>
+                        <nav class="flex items-center gap-9">
+                            <a class="text-slate-400 hover:text-primary text-sm font-medium transition-colors"
+                                href="#">Research</a>
+                            <a class="text-slate-400 hover:text-primary text-sm font-medium transition-colors"
+                                href="#">Equipment</a>
+                            <a class="text-slate-400 hover:text-primary text-sm font-medium transition-colors"
+                                href="#">Team</a>
+                            <a class="text-primary text-sm font-semibold" href="#">Publications</a>
+                            <a class="text-slate-400 hover:text-primary text-sm font-medium transition-colors"
+                                href="#">Contact</a>
+                        </nav>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <div class="relative group">
+                            <span
+                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-primary transition-colors">search</span>
+                            <input
+                                class="bg-white/5 border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none w-64 transition-all"
+                                placeholder="Search archive..." type="text" />
+                        </div>
+                        <button
+                            class="bg-primary hover:bg-primary/90 text-background-dark px-6 py-2 rounded-lg text-sm font-bold transition-all">
+                            Login
+                        </button>
+                    </div>
+                </header>
+                <main class="flex-1 relative flex flex-col px-20 pt-16">
+                    <div class="absolute top-0 right-20 bg-number font-black opacity-10 select-none">
+                        04
+                    </div>
+                    <div class="relative z-10 flex flex-col gap-6">
+                        <div class="flex flex-col gap-2">
+                            <h1 class="text-5xl font-black tracking-tight text-slate-100">Публикации &amp; Данные</h1>
+                            <p class="text-slate-400 text-lg max-w-2xl">Архив научных исследований и генетических данных
+                                лаборатории нового поколения.</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button
+                                class="glass-pill px-6 py-2 rounded-full text-sm font-medium text-primary border-primary/30">Все</button>
+                            <button
+                                class="glass-pill px-6 py-2 rounded-full text-sm font-medium text-slate-300">2024</button>
+                            <button
+                                class="glass-pill px-6 py-2 rounded-full text-sm font-medium text-slate-300">Генетика</button>
+                            <button
+                                class="glass-pill px-6 py-2 rounded-full text-sm font-medium text-slate-300">Биомаркеры</button>
+                        </div>
+                    </div>
+                    <div class="flex-1 flex items-center justify-center relative">
+                        <div class="absolute w-56 h-56 bacterium-model cursor-pointer z-10" data-title="Облачный Био-Архив" data-text="Глобальная база данных анонимизированных исследований. Сбор, систематизация и анализ данных из 40 стран мира. Нажмите, чтобы запросить доступ к API для независимых лабораторий и исследовательских центров."></div>
+                    </div>
+                    <div class="w-full pb-12 z-10">
+                        <div class="glass-panel rounded-xl overflow-hidden border border-white/10 shadow-2xl">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr
+                                        class="text-slate-500 text-xs uppercase tracking-widest border-b border-white/5">
+                                        <th class="px-8 py-4 font-semibold w-24">Год</th>
+                                        <th class="px-8 py-4 font-semibold">Название исследования</th>
+                                        <th class="px-8 py-4 font-semibold">Авторы</th>
+                                        <th class="px-8 py-4 w-16"></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-white/5">
+                                    <tr class="stagger-row row-hover transition-all cursor-pointer group">
+                                        <td class="px-8 py-6 text-slate-400 font-mono">2024</td>
+                                        <td
+                                            class="px-8 py-6 text-slate-100 font-medium group-hover:text-primary transition-colors">
+                                            Геномное секвенирование нового поколения в диагностике редких заболеваний
+                                        </td>
+                                        <td class="px-8 py-6 text-slate-400">Иванов И.И., Смирнов А.В.</td>
+                                        <td class="px-8 py-6 text-right">
+                                            <span
+                                                class="material-symbols-outlined text-slate-600 group-hover:text-primary transition-all translate-x-0 group-hover:translate-x-1">arrow_forward</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="stagger-row row-hover transition-all cursor-pointer group">
+                                        <td class="px-8 py-6 text-slate-400 font-mono">2023</td>
+                                        <td
+                                            class="px-8 py-6 text-slate-100 font-medium group-hover:text-primary transition-colors">
+                                            Сравнительный анализ биомаркеров в ранней онкологии
+                                        </td>
+                                        <td class="px-8 py-6 text-slate-400">Petrov P., Wilson K.</td>
+                                        <td class="px-8 py-6 text-right">
+                                            <span
+                                                class="material-symbols-outlined text-slate-600 group-hover:text-primary transition-all translate-x-0 group-hover:translate-x-1">arrow_forward</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="stagger-row row-hover transition-all cursor-pointer group">
+                                        <td class="px-8 py-6 text-slate-400 font-mono">2023</td>
+                                        <td
+                                            class="px-8 py-6 text-slate-100 font-medium group-hover:text-primary transition-colors">
+                                            Эпигенетические модификации и процессы клеточного старения
+                                        </td>
+                                        <td class="px-8 py-6 text-slate-400">Сидоров С.С., Чен Л.</td>
+                                        <td class="px-8 py-6 text-right">
+                                            <span
+                                                class="material-symbols-outlined text-slate-600 group-hover:text-primary transition-all translate-x-0 group-hover:translate-x-1">arrow_forward</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div
+                            class="mt-4 flex justify-between items-center text-xs text-slate-600 uppercase tracking-tighter">
+                            <div>Variant 4 of 5 • Data Stream Active</div>
+                            <div class="flex gap-4">
+                                <span class="flex items-center gap-1"><span
+                                        class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span> DB Connection:
+                                    Stable</span>
+                                <span>Archive Size: 1.2 PB</span>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <div class="absolute inset-0 -z-10 pointer-events-none opacity-20">
+                    <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]">
+                    </div>
+                    <div
+                        class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px]">
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <section id="slide-4"
+            class="w-full min-h-screen relative flex flex-col shrink-0 overflow-hidden bg-background-dark">
+
+            <div class="relative flex min-h-screen w-full flex-col">
+                <!-- Header / Navigation -->
+                <header class="flex items-center justify-between whitespace-nowrap border-b border-white/10 px-10 py-4">
+                    <div class="flex items-center gap-4">
+                        <div class="size-6 text-primary">
+                            <span class="material-symbols-outlined text-3xl">biotech</span>
+                        </div>
+                        <h2 class="text-xl font-bold leading-tight tracking-tight">Lab Era</h2>
+                    </div>
+                    <div class="flex flex-1 justify-end gap-8">
+                        <nav class="hidden md:flex items-center gap-9">
+                            <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Research</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Equipment</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Protocols</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Team</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Contact</a>
+                        </nav>
+                        <button
+                            class="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-6 bg-primary text-background-dark text-sm font-bold tracking-wide hover:brightness-110 transition-all">
+                            Portal
+                        </button>
+                    </div>
+                </header>
+                <!-- Main Content Area -->
+                <main class="flex-1 flex flex-col justify-between px-10 py-12 max-w-[1440px] mx-auto w-full">
+                    <!-- Top Section: Background Index -->
+                    <div class="flex flex-col gap-2">
+                        <div class="relative">
+                            <span
+                                class="text-8xl md:text-9xl font-black opacity-10 leading-none select-none tracking-tighter">05</span>
+                            <div class="absolute bottom-4 left-2">
+                                <h3 id="typing-text" class="text-2xl md:text-3xl font-light tracking-wide text-slate-100">Записаться на
+                                    исследование</h3>
+                                <div class="h-1 w-12 bg-primary mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Center Section: Empty for Animations (Dynamic Content Space) -->
+                    <div class="flex-1 min-h-[30vh]"></div>
+                    <!-- Bottom Section: Glassmorphic Contact/Booking -->
+                    <div class="w-full space-y-12">
+                        <!-- Minimalist Glassmorphic Form -->
+                        <div class="max-w-3xl mx-auto w-full glass-panel p-8 rounded-2xl shadow-2xl">
+                            <div class="flex flex-col gap-6 text-center mb-8">
+                                <h2 class="text-2xl font-bold tracking-tight">Request a Consultation</h2>
+                                <p class="text-slate-400 text-sm max-w-md mx-auto">Enter your email to receive the
+                                    medical protocol details and available slots for testing.</p>
+                            </div>
+                            <div class="flex flex-col md:flex-row gap-4 justify-center items-stretch">
+                                <div class="flex-1 max-w-md">
+                                    <input id="email-input"
+                                        class="w-full h-14 px-6 glass-input rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                        placeholder="Email address" type="email" />
+                                </div>
+                                <button id="booking-btn"
+                                    class="glass-button h-14 px-10 rounded-xl font-bold text-base whitespace-nowrap">
+                                    Book Now
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Contact Details Row -->
+                        <div
+                            class="flex flex-wrap justify-center items-center gap-x-12 gap-y-4 py-8 border-t border-white/5">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary text-xl">mail</span>
+                                <span class="text-sm font-medium text-slate-300">lab@future.med</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary text-xl">call</span>
+                                <span class="text-sm font-medium text-slate-300">+7 (495) 000-00-00</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary text-xl">location_on</span>
+                                <span class="text-sm font-medium text-slate-300">Skolkovo Innovation Center</span>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <!-- Footer -->
+                <footer class="flex flex-col gap-4 px-10 py-8 border-t border-white/5 text-center">
+                    <div class="flex items-center justify-center gap-8">
+                        <a class="text-xs text-slate-500 hover:text-primary transition-colors" href="#">Privacy
+                            Policy</a>
+                        <a class="text-xs text-slate-500 hover:text-primary transition-colors" href="#">Terms of
+                            Service</a>
+                        <a class="text-xs text-slate-500 hover:text-primary transition-colors"
+                            href="#">Accessibility</a>
+                    </div>
+                    <p class="text-xs text-slate-600">© 2024 Future Medical Lab. Variant 05/05. All rights reserved.</p>
+                </footer>
+                <!-- Glowing Background Accents -->
+                <div
+                    class="fixed top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none z-[-1]">
+                </div>
+                <div
+                    class="fixed bottom-[-5%] left-[-5%] w-[400px] h-[400px] bg-primary/5 blur-[100px] rounded-full pointer-events-none z-[-1]">
+                </div>
+            </div>
+
+        </section>
+
+        <!-- INFO MODAL -->
+        <div id="info-modal" class="fixed inset-0 z-[100000] flex items-center justify-center opacity-0 pointer-events-none transition-all duration-500 backdrop-blur-xl bg-background-dark/80">
+            <div class="glass-panel p-8 md:p-12 max-w-2xl w-[90%] rounded-3xl relative transform scale-95 transition-transform duration-500 bg-black/50 border border-white/10 shadow-2xl" id="info-modal-content">
+                <button id="close-modal" class="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-3xl">close</span>
+                </button>
+                <div id="modal-bacteria-container" class="absolute -top-10 -left-10 w-32 h-32 opacity-50 pointer-events-none"></div>
+                <h3 class="text-3xl font-bold tracking-tight text-slate-100 mb-4 font-mono uppercase text-primary" id="modal-title">Анализируем...</h3>
+                <p class="text-slate-300 leading-relaxed text-sm md:text-base border-l-2 border-primary/50 pl-4 mb-6" id="modal-text">
+                    Данные загружаются...
+                </p>
+                <div class="flex gap-4">
+                    <button class="bg-primary/20 text-primary px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-primary transition-all hover:text-white">Скачать Отчёт</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <style>
+        /* --- DYNAMIC ISLAND (НАВИГАЦИЯ СВЕРХУ) APPLE LIQUID GLASS --- */
+        .dynamic-island {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 15, 15, 0.5);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 30px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            overflow: hidden;
+            /* Пружинящая (желейная) анимация Apple */
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            width: 170px;
+            height: 52px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .island-visible {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            opacity: 1;
+            /* Смещение вверх при открытии */
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+        }
+
+        .island-hidden {
+            display: flex;
+            gap: 24px;
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            transition: opacity 0.4s ease 0.1s, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: scale(0.8) translateY(15px);
+            white-space: nowrap;
+        }
+
+        .island-hidden a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .island-hidden a:hover {
+            color: #fff;
+        }
+
+        .dynamic-island:hover {
+            width: 580px;
+            height: 64px;
+            background: rgba(25, 25, 25, 0.8);
+            border-radius: 32px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .dynamic-island:hover .island-visible {
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(-50%, -150%) scale(0.8);
+        }
+
+        .dynamic-island:hover .island-hidden {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .dynamic-island {
+                top: auto;
+                bottom: 24px;
+                width: 90%;
+            }
+            .dynamic-island:hover {
+                width: 95%;
+                height: auto;
+                padding: 16px 0;
+            }
+            .island-hidden {
+                flex-direction: column;
+                gap: 16px;
+                align-items: center;
+                white-space: normal;
+                padding-bottom: 20px;
+            }
+            .island-hidden a {
+                font-size: 16px;
+                padding: 8px;
+            }
+            .dynamic-island:hover .island-visible {
+                transform: translate(-50%, -200%) scale(0.8);
+            }
+        }
+
+        /* Hide existing headers in stitch slides to prevent dual navbars */
+        section header {
+            display: none !important;
+        }
+    </style>
+    <script>
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        const frameCount = 160;
+        const frames = [];
+        let canvasWidth, canvasHeight;
+
+        // Path to the provided sequence frames
+        const getFramePath = (index) => `sequence2/ezgif-frame-${index.toString().padStart(3, '0')}.jpg`;
+
+        function resizeCanvas() {
+            canvasWidth = window.innerWidth;
+            canvasHeight = window.innerHeight;
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            renderFrame(Math.round(currentFrameIndex));
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        function renderFrame(index) {
+            index = Math.round(index);
+            if (frames[index] && frames[index].complete && frames[index].naturalWidth !== 0) {
+                const img = frames[index];
+                const imgRatio = img.naturalWidth / img.naturalHeight;
+                const canvasRatio = canvasWidth / canvasHeight;
+                let drawWidth, drawHeight, offsetX, offsetY;
+
+                if (imgRatio > canvasRatio) {
+                    drawHeight = canvasHeight;
+                    drawWidth = img.naturalWidth * (canvasHeight / img.naturalHeight);
+                    offsetX = (canvasWidth - drawWidth) / 2;
+                    offsetY = 0;
+                } else {
+                    drawWidth = canvasWidth;
+                    drawHeight = img.naturalHeight * (canvasWidth / img.naturalWidth);
+                    offsetX = 0;
+                    offsetY = (canvasHeight - drawHeight) / 2;
+                }
+
+                ctx.fillStyle = "white";
+                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+                ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+            }
+        }
+
+        // LOAD FRAMES
+        for (let i = 1; i <= frameCount; i++) {
+            const img = new Image();
+            img.src = getFramePath(i);
+            frames.push(img);
+        }
+
+        let currentFrameIndex = 0;
+        let targetFrameIndex = 0;
+
+        function drawLoop() {
+            // Smooth lerp for background animation
+            currentFrameIndex += (targetFrameIndex - currentFrameIndex) * 0.1;
+            renderFrame(currentFrameIndex);
+            
+            // Cursor glow
+            if (cursorGlowPos.targetX !== undefined) {
+                cursorGlowPos.x += (cursorGlowPos.targetX - cursorGlowPos.x) * 0.15;
+                cursorGlowPos.y += (cursorGlowPos.targetY - cursorGlowPos.y) * 0.15;
+                cursorGlow.style.transform = `translate(${cursorGlowPos.x}px, ${cursorGlowPos.y}px) translate(-50%, -50%)`;
+            }
+
+            requestAnimationFrame(drawLoop);
+        }
+        
+        // ---- CURSOR LOGIC ---- //
+        const cursorGlow = document.getElementById('cursor-glow');
+        const cursorGlowPos = { x: window.innerWidth / 2, y: window.innerHeight / 2, targetX: window.innerWidth / 2, targetY: window.innerHeight / 2 };
+        window.addEventListener('mousemove', (e) => {
+            cursorGlowPos.targetX = e.clientX;
+            cursorGlowPos.targetY = e.clientY;
+        });
+
+        const updateCursorHover = () => {
+            document.querySelectorAll('a, button, .glass-card, .bacterium-model').forEach(el => {
+                el.addEventListener('mouseenter', () => cursorGlow.classList.add('hover-active'));
+                el.addEventListener('mouseleave', () => cursorGlow.classList.remove('hover-active'));
+            });
+        };
+
+        drawLoop();
+        resizeCanvas();
+
+        // ---- SVG BACTERIA LOGIC ---- //
+        const bacteriaContainer = document.getElementById('bacteria-container');
+        const bacteriaArray = [];
+        const numBacteria = 60;
+
+        const colors = [
+            { stroke: 'rgba(19, 182, 236, 0.4)', fill: 'rgba(19, 182, 236, 0.1)', core: 'rgba(19, 182, 236, 0.5)' },
+            { stroke: 'rgba(40, 200, 150, 0.4)', fill: 'rgba(40, 200, 150, 0.1)', core: 'rgba(40, 200, 150, 0.5)' },
+            { stroke: 'rgba(150, 150, 200, 0.4)', fill: 'rgba(150, 150, 200, 0.1)', core: 'rgba(150, 150, 200, 0.5)' },
+            { stroke: 'rgba(255, 100, 150, 0.4)', fill: 'rgba(255, 100, 150, 0.1)', core: 'rgba(255, 100, 150, 0.5)' }
+        ];
+
+        for (let i = 0; i < numBacteria; i++) {
+            const c = colors[Math.floor(Math.random() * colors.length)];
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("viewBox", "0 0 100 100");
+            svg.style.position = 'absolute';
+
+            const left = Math.random() * 95;
+            const top = Math.random() * 95;
+            svg.style.left = left + "%";
+            svg.style.top = top + "%";
+
+            const size = Math.random() * 60 + 20;
+            svg.style.width = size + "px";
+            svg.style.height = size + "px";
+
+            svg.style.opacity = '0';
+            svg.style.transform = `scale(0) rotate(0deg)`;
+            svg.style.transition = 'transform 0.1s ease-out, opacity 0.1s ease-out';
+
+            const cell = document.createElementNS(svgNS, "circle");
+            cell.setAttribute("cx", "50");
+            cell.setAttribute("cy", "50");
+            cell.setAttribute("r", "40");
+            cell.setAttribute("fill", c.fill);
+            cell.setAttribute("stroke", c.stroke);
+            cell.setAttribute("stroke-width", "3");
+
+            const numCores = Math.floor(Math.random() * 3) + 1;
+            for (let j = 0; j < numCores; j++) {
+                const core = document.createElementNS(svgNS, "circle");
+                core.setAttribute("cx", 50 + (Math.random() * 30 - 15));
+                core.setAttribute("cy", 50 + (Math.random() * 30 - 15));
+                core.setAttribute("r", Math.random() * 8 + 3);
+                core.setAttribute("fill", c.core);
+                svg.appendChild(core);
+            }
+
+            svg.appendChild(cell);
+
+            for (let j = 0; j < 8; j++) {
+                const line = document.createElementNS(svgNS, "line");
+                const angle = (j / 8) * Math.PI * 2;
+                line.setAttribute("x1", 50 + Math.cos(angle) * 40);
+                line.setAttribute("y1", 50 + Math.sin(angle) * 40);
+                line.setAttribute("x2", 50 + Math.cos(angle) * (45 + Math.random() * 10));
+                line.setAttribute("y2", 50 + Math.sin(angle) * (45 + Math.random() * 10));
+                line.setAttribute("stroke", c.stroke);
+                line.setAttribute("stroke-width", "2");
+                line.setAttribute("stroke-linecap", "round");
+                svg.appendChild(line);
+            }
+
+            bacteriaContainer.appendChild(svg);
+
+            bacteriaArray.push({
+                el: svg,
+                activationPoint: Math.random() * 0.8,
+                speed: Math.random() * 2 + 0.5,
+                directionX: (Math.random() - 0.5),
+                directionY: (Math.random() - 0.5),
+                rotSpeed: (Math.random() - 0.5) * 100
+            });
+        }
+
+        // ---- SCROLL LOGIC ---- //
+        const introSequence = document.getElementById('intro-sequence');
+        const hint = document.getElementById('scroll-hint');
+        const fadeOverlay = document.getElementById('fade-overlay');
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const introHeight = introSequence.offsetHeight;
+            const scrollableIntro = introHeight - window.innerHeight;
+
+            let introProgress = scrollTop / scrollableIntro;
+            if (introProgress < 0) introProgress = 0;
+            if (introProgress > 1) introProgress = 1;
+
+            if (introProgress > 0.02) {
+                hint.style.opacity = '0';
+            } else {
+                hint.style.opacity = '1';
+            }
+
+            // Phases:
+            // 0.0 -> 0.4 : Video Phase
+            // 0.4 -> 0.7 : Bacteria Phase
+            // 0.7 -> 1.0 : Fade out Phase
+
+            const videoPhaseEnd = 0.4;
+            const bacteriaPhaseEnd = 0.7;
+
+            const slogan = document.getElementById('intro-slogan');
+
+            if (introProgress <= videoPhaseEnd) {
+                // Video phase
+                let videoProgress = introProgress / videoPhaseEnd;
+                targetFrameIndex = videoProgress * (frameCount - 1);
+                fadeOverlay.style.opacity = '0';
+                if(slogan) slogan.style.opacity = '0';
+
+                bacteriaArray.forEach(b => {
+                    b.el.style.opacity = '0';
+                    b.el.style.transform = 'scale(0) rotate(0deg)';
+                });
+
+            } else if (introProgress <= bacteriaPhaseEnd) {
+                // Bacteria phase
+                targetFrameIndex = frameCount - 1; // Last white frame
+                fadeOverlay.style.opacity = '0';
+
+                let bacteriaProgress = (introProgress - videoPhaseEnd) / (bacteriaPhaseEnd - videoPhaseEnd);
+                
+                // Fade in slogan
+                if(slogan) slogan.style.opacity = Math.min(bacteriaProgress * 2, 1);
+
+                bacteriaArray.forEach(b => {
+                    if (bacteriaProgress > b.activationPoint) {
+                        let innerProgress = (bacteriaProgress - b.activationPoint) / (1 - b.activationPoint);
+                        let scale = Math.min(innerProgress * 3, 1 + (innerProgress * 0.5));
+                        let rotation = innerProgress * b.rotSpeed;
+
+                        b.el.style.opacity = Math.min(innerProgress * 5, 1);
+                        b.el.style.transform = `scale(${scale}) rotate(${rotation}deg) translate(${b.directionX * innerProgress * 50}px, ${b.directionY * innerProgress * 50}px)`;
+                    } else {
+                        b.el.style.opacity = '0';
+                        b.el.style.transform = 'scale(0) rotate(0deg)';
+                    }
+                });
+            } else {
+                // Fade out to black phase smoothly
+                targetFrameIndex = frameCount - 1;
+                let fadeProgress = (introProgress - bacteriaPhaseEnd) / (1 - bacteriaPhaseEnd);
+
+                // Overlay opacity from 0 to 1 matches bg-background-dark seamlessly
+                fadeOverlay.style.opacity = fadeProgress;
+                if(slogan) slogan.style.opacity = Math.max(1 - (fadeProgress * 2), 0);
+
+                bacteriaArray.forEach(b => {
+                    b.el.style.opacity = Math.max(1 - (fadeProgress * 1.5), 0);
+                });
+            }
+        });
+
+        window.dispatchEvent(new Event('scroll'));
+
+        // Navigation Dynamic Island Click Handlers
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // ==========================
+        // NEW IMPROVEMENTS (USER REQUESTS)
+        // ==========================
+
+        // 1. Hover Parallax on slide-0
+        const parallaxBalls = document.querySelectorAll('.parallax-element');
+        window.addEventListener('mousemove', (e) => {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const moveX = (e.clientX - centerX) * 0.05;
+            const moveY = (e.clientY - centerY) * 0.05;
+            
+            parallaxBalls.forEach((ball, idx) => {
+                const modifier = idx === 0 ? -1 : 1; 
+                ball.style.transform = `translate(${moveX * modifier}px, ${moveY * modifier}px)`;
+            });
+        });
+
+        // 2 & 4 & 6. Intersection Observers for animation (Stats, Stagger, Reveal, Typing)
+        const countUp = (el) => {
+            const target = parseFloat(el.getAttribute('data-target'));
+            const duration = 2000; // 2 seconds
+            const startTime = performance.now();
+            const step = (currentTime) => {
+                const progress = Math.min((currentTime - startTime) / duration, 1);
+                // ease out cubic
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                let currentPos = target * easeOut;
+                
+                // Keep 1 decimal if target has decimal
+                if (target % 1 !== 0) el.innerText = currentPos.toFixed(1);
+                else el.innerText = Math.floor(currentPos);
+
+                if (progress < 1) requestAnimationFrame(step);
+                else el.innerText = target;
+            };
+            requestAnimationFrame(step);
+        };
+
+        let typeTextElement = document.getElementById('typing-text');
+        let originalText = typeTextElement ? typeTextElement.innerText : "";
+        if(typeTextElement) {
+            typeTextElement.innerText = ''; // clear initially
+            // remove soft returns to normalize text before typing
+            originalText = originalText.replace(/\n\s+/g, ' '); 
+        }
+        let isTyped = false;
+
+        const observerOptions = { threshold: 0.1 };
+        const mainObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Normal reveals
+                    if (entry.target.classList.contains('reveal')) {
+                        entry.target.classList.add('active');
+                        // If it has stat counter inside
+                        const counter = entry.target.querySelector('.stat-counter');
+                        if (counter && !counter.classList.contains('counted')) {
+                            counter.classList.add('counted');
+                            countUp(counter);
+                        }
+                    }
+                    
+                    // Stagger rows
+                    if (entry.target.classList.contains('stagger-row')) {
+                        setTimeout(() => {
+                            entry.target.classList.add('active');
+                        }, Array.from(entry.target.parentNode.children).indexOf(entry.target) * 80);
+                    }
+                    
+                    // Typing effect
+                    if (entry.target.id === 'typing-text' && !isTyped) {
+                        isTyped = true;
+                        let i = 0;
+                        const typeWriter = setInterval(() => {
+                            if (i < originalText.length) {
+                                typeTextElement.innerHTML += originalText.charAt(i);
+                                i++;
+                            } else {
+                                clearInterval(typeWriter);
+                            }
+                        }, 60);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal, .stagger-row, #typing-text').forEach(el => mainObserver.observe(el));
+
+        // 3. Live time in footer slide-1
+        const timeEl = document.getElementById('live-time');
+        if (timeEl) {
+            setInterval(() => {
+                const now = new Date();
+                timeEl.innerText = `UTC: ${now.toISOString().substr(11, 8)}`;
+            }, 1000);
+        }
+
+        // 7. Form validation
+        const emailInput = document.getElementById('email-input');
+        const bookingBtn = document.getElementById('booking-btn');
+        if (emailInput && bookingBtn) {
+            bookingBtn.addEventListener('click', () => {
+                const validRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailInput.value.match(validRegex)) {
+                    // Invalid
+                    bookingBtn.classList.remove('shake');
+                    void bookingBtn.offsetWidth; // trigger reflow
+                    bookingBtn.classList.add('shake');
+                    
+                    emailInput.classList.remove('border-white/10');
+                    emailInput.classList.add('border-red-500');
+                    emailInput.classList.add('border'); // Ensure border size is applied
+                } else {
+                    // Valid
+                    emailInput.classList.remove('border-red-500');
+                    emailInput.classList.add('border-white/10');
+                    
+                    const originalText = bookingBtn.innerText;
+                    bookingBtn.innerText = '✔ Success';
+                    bookingBtn.classList.add('bg-green-500', 'text-white');
+                    bookingBtn.classList.remove('bg-primary', 'text-background-dark');
+                    setTimeout(() => {
+                        bookingBtn.innerText = originalText;
+                        bookingBtn.classList.remove('bg-green-500', 'text-white');
+                        bookingBtn.classList.add('bg-primary', 'text-background-dark');
+                        emailInput.value = '';
+                    }, 2000);
+                }
+            });
+        }
+
+        // 8. Active section dynamic island
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-links a');
+        
+        const sectionObserverOptions = { threshold: 0.5 };
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    const id = entry.target.id;
+                    navLinks.forEach(link => {
+                        if(link.getAttribute('href') === `#${id}`) {
+                            link.style.color = '#13b6ec';
+                        } else {
+                            link.style.color = 'rgba(255, 255, 255, 0.7)';
+                        }
+                    });
+                }
+            });
+        }, sectionObserverOptions);
+        
+        sections.forEach(sec => sectionObserver.observe(sec));
+        // 9. Interactive Bacteria info modals
+        function createBacteriumInside(el) {
+            const c = colors[Math.floor(Math.random() * colors.length)];
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("viewBox", "0 0 100 100");
+            svg.style.width = "100%";
+            svg.style.height = "100%";
+            
+            const cell = document.createElementNS(svgNS, "circle");
+            cell.setAttribute("cx", "50");
+            cell.setAttribute("cy", "50");
+            cell.setAttribute("r", "40");
+            cell.setAttribute("fill", c.fill);
+            cell.setAttribute("stroke", c.stroke);
+            cell.setAttribute("stroke-width", "3");
+
+            const numCores = Math.floor(Math.random() * 3) + 1;
+            for (let j = 0; j < numCores; j++) {
+                const core = document.createElementNS(svgNS, "circle");
+                core.setAttribute("cx", 50 + (Math.random() * 30 - 15));
+                core.setAttribute("cy", 50 + (Math.random() * 30 - 15));
+                core.setAttribute("r", Math.random() * 8 + 3);
+                core.setAttribute("fill", c.core);
+                svg.appendChild(core);
+            }
+
+            svg.appendChild(cell);
+
+            for (let j = 0; j < 8; j++) {
+                const line = document.createElementNS(svgNS, "line");
+                const angle = (j / 8) * Math.PI * 2;
+                line.setAttribute("x1", 50 + Math.cos(angle) * 40);
+                line.setAttribute("y1", 50 + Math.sin(angle) * 40);
+                line.setAttribute("x2", 50 + Math.cos(angle) * (45 + Math.random() * 10));
+                line.setAttribute("y2", 50 + Math.sin(angle) * (45 + Math.random() * 10));
+                line.setAttribute("stroke", c.stroke);
+                line.setAttribute("stroke-width", "2");
+                line.setAttribute("stroke-linecap", "round");
+                svg.appendChild(line);
+            }
+
+            el.appendChild(svg);
+            
+            let rot = Math.random() * 360;
+            const speed = (Math.random() - 0.5) * 2;
+            setInterval(() => {
+                rot += speed;
+                svg.style.transform = `rotate(${rot}deg)`;
+            }, 30);
+        }
+
+        const infoModal = document.getElementById('info-modal');
+        const infoModalContent = document.getElementById('info-modal-content');
+        const closeModal = document.getElementById('close-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalText = document.getElementById('modal-text');
+        
+        // Init bacteria in slides
+        document.querySelectorAll('.bacterium-model').forEach(model => {
+            createBacteriumInside(model);
+            
+            model.addEventListener('click', () => {
+                modalTitle.innerText = model.getAttribute('data-title');
+                modalText.innerText = model.getAttribute('data-text');
+                
+                infoModal.classList.remove('opacity-0', 'pointer-events-none');
+                infoModalContent.classList.remove('scale-95');
+                infoModalContent.classList.add('scale-100');
+            });
+        });
+
+        // Add one inside the modal itself
+        if (document.getElementById('modal-bacteria-container')) {
+            createBacteriumInside(document.getElementById('modal-bacteria-container'));
+        }
+
+        if (closeModal) {
+            closeModal.addEventListener('click', () => {
+                infoModal.classList.add('opacity-0', 'pointer-events-none');
+                infoModalContent.classList.remove('scale-100');
+                infoModalContent.classList.add('scale-95');
+            });
+        }
+
+        // Update cursor hover states initially
+        updateCursorHover();
+
+    </script>
+
+</body>
+
+</html>
